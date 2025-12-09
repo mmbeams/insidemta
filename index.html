@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Data Story</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fff;
+        }
+
+        /* Hero Section with Cover Image */
+        .hero {
+            width: 100%;
+        }
+
+        .hero-content {
+            text-align: center;
+            color: #000;
+            padding: 150px 20px 60px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero h2 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            font-style: italic;
+            margin-bottom: 40px;
+        }
+
+        .hero-image {
+            width: 100%;
+            display: block;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Main Content Container */
+        .story-container {
+            position: relative;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* First Section - Traditional Layout */
+        .first-section-container {
+            max-width: 1200px;
+            margin: 0 auto 100px auto;
+            padding: 40px 20px;
+        }
+
+        .first-section-text {
+            margin-bottom: 80px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .first-section-text h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .first-section-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .first-section-chart {
+            width: 100%;
+            height: 400px;
+            margin-bottom: 800px;
+        }
+
+        .first-section-chart .flourish-embed {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Fixed Chart Container */
+        .chart-container {
+            position: fixed;
+            left: 5%;
+            top: 15%;
+            width: 45%;
+            height: 70vh;
+            z-index: 10;
+        }
+
+        .chart-item {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out;
+            pointer-events: none;
+        }
+
+        .chart-item.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Scrolling Text Container */
+        .text-container {
+            margin-left: 52%;
+            width: 43%;
+        }
+
+        .text-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 40px 0;
+        }
+
+        .text-content {
+            opacity: 0.3;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .text-content.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .text-content h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .text-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        /* Conclusion Section - Full Width */
+        .conclusion-section {
+            margin-left: 0;
+            width: 100%;
+            max-width: 800px;
+            margin: 100px auto 60px auto;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .conclusion-section h3 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: #000;
+        }
+
+        .conclusion-section p {
+            font-size: 1.2rem;
+            line-height: 1.9;
+            color: #333;
+        }
+
+        /* Sources Section */
+        .sources-section {
+            margin-left: 0;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto 100px auto;
+            padding: 40px 40px 60px 40px;
+            border-top: 1px solid #ddd;
+        }
+
+        .sources-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .sources-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sources-section li {
+            margin-bottom: 12px;
+        }
+
+        .sources-section a {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            word-break: break-all;
+        }
+
+        .sources-section a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero h2 {
+                font-size: 1.3rem;
+            }
+
+            .first-section-container {
+                padding: 20px;
+            }
+
+            .first-section-text h3 {
+                font-size: 1.5rem;
+            }
+
+            .first-section-text p {
+                font-size: 1rem;
+            }
+
+            .first-section-chart {
+                height: 400px;
+            }
+
+            .chart-container {
+                position: relative;
+                left: auto;
+                top: auto;
+                transform: none;
+                width: 100%;
+                height: 400px;
+                margin-bottom: 40px;
+            }
+
+            .text-container {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .text-section {
+                min-height: auto;
+                padding: 20px 0;
+            }
+
+            .text-content h3 {
+                font-size: 1.5rem;
+            }
+
+            .text-content p {
+                font-size: 1rem;
+            }
+
+            .conclusion-section {
+                padding: 40px 20px;
+            }
+
+            .conclusion-section h3 {
+                font-size: 1.8rem;
+            }
+
+            .conclusion-section p {
+                font-size: 1rem;
+            }
+
+            .sources-section {
+                padding: 30px 20px;
+            }
+
+            .sources-section h3 {
+                font-size: 1.3rem;
+            }
+
+            .sources-section a {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Flourish embed responsiveness */
+        .flourish-embed {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section with Cover Image -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Inside the MTA:<br>Who Rides, Where They Go,<br>and Why Trains Get Stuck</h1>
+            <h2>For this project, I wanted to understand not just how many people ride New York transit, but how the system actually behaves. Where people go, how ridership shifts, and what really causes delays and incidents. So I asked six simple questions and visualized each one with a chart type that makes the answer feel intuitive at a glance.</h2>
+        </div>
+        <div class="hero-image">
+            <img src="cover.png" alt="Cover Image">
+        </div>
+    </section>
+
+    <!-- First Section - Traditional Layout -->
+    <div class="first-section-container">
+        <div class="first-section-text">
+            <h3>Which stations have the highest weekday ridership, and where are they on the map?</h3>
+            <p>
+                <strong>Chart choice:</strong> A bubble map, because location matters for this question, and bubble size instantly communicates magnitude.
+            </p>
+            <p>
+                <strong>What I found:</strong> I plotted each station on a map of the city with bubbles sized by ridership. You see that the busiest stations cluster around Midtown and lower Midtown. Times Square absolutely dominates the map, as it's the single busiest station in NYC.
+            </p>
+        </div>
+        <div class="first-section-chart">
+            <div class="flourish-embed flourish-map" data-src="visualisation/26683089">
+                <script src="https://public.flourish.studio/resources/embed.js"></script>
+                <noscript><img src="https://public.flourish.studio/visualisation/26683089/thumbnail" width="100%" alt="map visualization" /></noscript>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Scrollytelling Container -->
+    <div class="story-container">
+        <!-- Fixed Chart Container on Left -->
+        <div class="chart-container">
+            <div class="chart-item" data-chart="1">
+                <div class="flourish-embed flourish-chart" data-src="visualisation/26703029">
+                    <script src="https://public.flourish.studio/resources/embed.js"></script>
+                    <noscript><img src="https://public.flourish.studio/visualisation/26703029/thumbnail" width="100%" alt="chart visualization" /></noscript>
+                </div>
+            </div>
+            <div class="chart-item" data-chart="2">
+                <div class="flourish-embed flourish-bar-chart-race" data-src="visualisation/26683293">
+                    <script src="https://public.flourish.studio/resources/embed.js"></script>
+                    <noscript><img src="https://public.flourish.studio/visualisation/26683293/thumbnail" width="100%" alt="bar-chart-race visualization" /></noscript>
+                </div>
+            </div>
+            <div class="chart-item" data-chart="3">
+                <div class="flourish-embed flourish-chart" data-src="visualisation/26683823">
+                    <script src="https://public.flourish.studio/resources/embed.js"></script>
+                    <noscript><img src="https://public.flourish.studio/visualisation/26683823/thumbnail" width="100%" alt="chart visualization" /></noscript>
+                </div>
+            </div>
+            <div class="chart-item" data-chart="4">
+                <div class="flourish-embed flourish-hierarchy" data-src="visualisation/26684019">
+                    <script src="https://public.flourish.studio/resources/embed.js"></script>
+                    <noscript><img src="https://public.flourish.studio/visualisation/26684019/thumbnail" width="100%" alt="hierarchy visualization" /></noscript>
+                </div>
+            </div>
+            <div class="chart-item" data-chart="5">
+                <div class="flourish-embed flourish-chart" data-src="visualisation/26702051">
+                    <script src="https://public.flourish.studio/resources/embed.js"></script>
+                    <noscript><img src="https://public.flourish.studio/visualisation/26702051/thumbnail" width="100%" alt="chart visualization" /></noscript>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scrolling Text Container on Right -->
+        <div class="text-container">
+            <div class="text-section" data-section="1">
+                <div class="text-content">
+                    <h3>How has weekday ridership at 370 Jay St changed from 2019 to 2024?</h3>
+                    <p>
+                        <strong>Chart choice:</strong> A seismogram chart styled like a seismogram, it is perfect for showing dramatic rises and drops over time.
+                    </p>
+                    <p>
+                        <strong>What I found:</strong> 370 Jay St's ridership basically falls off a cliff from 2019 to 2020 because of the pandemic. After that, the numbers climb steadily year by year, but even in 2024, the station still hasn't fully recovered to pre-pandemic levels.
+                    </p>
+                </div>
+            </div>
+
+            <div class="text-section" data-section="2">
+                <div class="text-content">
+                    <h3>How has weekday ridership changed over time for different types of transit?</h3>
+                    <p>
+                        <strong>Chart choice:</strong> An animated bar chart, because we're comparing multiple categories across multiple years, and animation makes the shifts easy to follow.
+                    </p>
+                    <p>
+                        <strong>What I found:</strong> 2020 is the weird outlier, as tunnels spike as the most-used mode, likely pandemic-related. After that, buses take over as the top category. Tunnels remain consistently strong, and both Metro-North and the LIRR show a gradual rise after 2021.
+                    </p>
+                </div>
+            </div>
+
+            <div class="text-section" data-section="3">
+                <div class="text-content">
+                    <h3>What are the most common reasons for delays, and how have they changed over the years?</h3>
+                    <p>
+                        <strong>Chart choice:</strong> An animated pie chart, it is helpful when each year has the same set of categories, and we want to see the proportions subtly shift or stay stable.
+                    </p>
+                    <p>
+                        <strong>What I found:</strong> There are seven major delay reasons: Crew, External Factors, Infrastructure/Equipment, Operating Conditions, Planned Work, Police/Medical. Across years, none of them dramatically dominates; they're surprisingly balanced, with each category making up a similar slice every year.
+                    </p>
+                </div>
+            </div>
+
+            <div class="text-section" data-section="4">
+                <div class="text-content">
+                    <h3>Which train lines experience the most delays?</h3>
+                    <p>
+                        <strong>Chart choice:</strong> A treemap, it is perfect for showing "part-to-whole" relationships when you have many categories, and scaling each one by its total delay count.
+                    </p>
+                    <p>
+                        <strong>What I found:</strong> When you look at the system as blocks of color, it's obvious that the A and N lines deal with the most delays. B and C have fewer, and the G and S lines barely take up any space, they're the least delayed overall.
+                    </p>
+                </div>
+            </div>
+
+            <div class="text-section" data-section="5">
+                <div class="text-content">
+                    <h3>How do different types of subway incidents change month to month in 2025?</h3>
+                    <p>
+                        <strong>Chart choice:</strong> Multi-line chart, it is ideal for showing how several incident categories rise and fall across months.
+                    </p>
+                    <p>
+                        <strong>What I found:</strong> Looking month by month, October stands out with a spike in track-related problems. But if you look at the full year, the most frequent incident category isn't track problems, it's "Persons on Trackbed / Police / Medical," which consistently appears at higher counts than others.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conclusion Section -->
+    <div class="conclusion-section">
+        <h3>Conclusion</h3>
+        <p>
+            By pairing each question with the right type of visualization, you can literally see the shape of the subway system, including the hotspots, the recovery patterns, the slowdowns, the surges, and the stress points. Together, these six visuals give a clearer picture of how New York really moves every day.
+        </p>
+    </div>
+
+    <!-- Sources Section -->
+    <div class="sources-section">
+        <h3>Sources</h3>
+        <ul>
+            <li><a href="https://www.mta.info/agency/new-york-city-transit/subway-bus-ridership-2024" target="_blank">https://www.mta.info/agency/new-york-city-transit/subway-bus-ridership-2024</a></li>
+            <li><a href="https://catalog.data.gov/dataset/mta-subway-hourly-ridership-beginning-2025?utm_source=chatgpt.com" target="_blank">https://catalog.data.gov/dataset/mta-subway-hourly-ridership-beginning-2025</a></li>
+            <li><a href="https://data.ny.gov/Transportation/MTA-General-Transit-Feed-Specification-GTFS-Static/fgm6-ccue/about_data" target="_blank">https://data.ny.gov/Transportation/MTA-General-Transit-Feed-Specification-GTFS-Static/fgm6-ccue/about_data</a></li>
+            <li><a href="https://catalog.data.gov/dataset/mta-subway-trains-delayed-beginning-2025" target="_blank">https://catalog.data.gov/dataset/mta-subway-trains-delayed-beginning-2025</a></li>
+            <li><a href="https://catalog.data.gov/dataset/mta-subway-major-incidents-beginning-2025" target="_blank">https://catalog.data.gov/dataset/mta-subway-major-incidents-beginning-2025</a></li>
+            <li><a href="https://catalog.data.gov/dataset/turnstile-usage-data-2022" target="_blank">https://catalog.data.gov/dataset/turnstile-usage-data-2022</a></li>
+            <li><a href="https://data.ny.gov/Transportation/MTA-Subway-Origin-Destination-Ridership-Estimate-2/jsu2-fbtj/about_data" target="_blank">https://data.ny.gov/Transportation/MTA-Subway-Origin-Destination-Ridership-Estimate-2/jsu2-fbtj/about_data</a></li>
+            <li><a href="https://data.ny.gov/Transportation/MTA-Daily-Ridership-Data-2020-2025/vxuj-8kew/about_data" target="_blank">https://data.ny.gov/Transportation/MTA-Daily-Ridership-Data-2020-2025/vxuj-8kew/about_data</a></li>
+            <li><a href="https://www.mta.info/press-release/mta-releases-preliminary-traffic-and-transit-data-first-work-week-under-congestion" target="_blank">https://www.mta.info/press-release/mta-releases-preliminary-traffic-and-transit-data-first-work-week-under-congestion</a></li>
+            <li><a href="https://data.ny.gov/Transportation/MTA-Colors/3uhz-sej2/about_data" target="_blank">https://data.ny.gov/Transportation/MTA-Colors/3uhz-sej2/about_data</a></li>
+            <li><a href="https://catalog.data.gov/dataset/mta-subway-stations" target="_blank">https://catalog.data.gov/dataset/mta-subway-stations</a></li>
+        </ul>
+        <p style="text-align: center; margin-top: 100px; color: #666; font-size: 0.95rem;">created by moira huang</p>
+    </div>
+
+    <!-- Scrollytelling Script -->
+    <script>
+        // Smooth scrolling behavior
+        document.documentElement.style.scrollBehavior = 'smooth';
+
+        // Get all text sections and chart items
+        const textSections = document.querySelectorAll('.text-section');
+        const chartItems = document.querySelectorAll('.chart-item');
+
+        // Intersection Observer for text sections
+        const observerOptions = {
+            root: null,
+            threshold: 0.5,
+            rootMargin: '-20% 0px -30% 0px'
+        };
+
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const sectionIndex = parseInt(entry.target.dataset.section);
+
+                if (entry.isIntersecting) {
+                    // Activate text content
+                    const textContent = entry.target.querySelector('.text-content');
+                    textContent.classList.add('active');
+
+                    // Fade out all charts
+                    chartItems.forEach(chart => {
+                        chart.classList.remove('active');
+                    });
+
+                    // Fade in corresponding chart
+                    const activeChart = document.querySelector(`[data-chart="${sectionIndex}"]`);
+                    if (activeChart) {
+                        activeChart.classList.add('active');
+                    }
+                } else {
+                    // Deactivate text content
+                    const textContent = entry.target.querySelector('.text-content');
+                    textContent.classList.remove('active');
+
+                    // Hide the corresponding chart when text is out of view
+                    const chart = document.querySelector(`[data-chart="${sectionIndex}"]`);
+                    if (chart) {
+                        chart.classList.remove('active');
+                    }
+                }
+            });
+        }, observerOptions);
+
+        // Observe all text sections
+        textSections.forEach(section => {
+            sectionObserver.observe(section);
+        });
+
+        // Observer for conclusion section to hide all charts
+        const conclusionSection = document.querySelector('.conclusion-section');
+        const conclusionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Fade out all charts when conclusion is visible
+                    chartItems.forEach(chart => {
+                        chart.classList.remove('active');
+                    });
+                }
+            });
+        }, {
+            root: null,
+            threshold: 0.3,
+            rootMargin: '0px 0px -20% 0px'
+        });
+
+        if (conclusionSection) {
+            conclusionObserver.observe(conclusionSection);
+        }
+
+        // Initialize - check if any section is in view on load
+        window.addEventListener('load', () => {
+            // Trigger initial check for all sections
+            textSections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+                const sectionIndex = parseInt(section.dataset.section);
+
+                // Check if section is in the active zone
+                if (rect.top < windowHeight * 0.8 && rect.bottom > windowHeight * 0.2) {
+                    const textContent = section.querySelector('.text-content');
+                    textContent.classList.add('active');
+
+                    const activeChart = document.querySelector(`[data-chart="${sectionIndex}"]`);
+                    if (activeChart) {
+                        activeChart.classList.add('active');
+                    }
+                }
+            });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
